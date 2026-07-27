@@ -1,0 +1,139 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "sum(rate({job=\"docker\"} | json [$__auto])) by (container)",
+            "legendFormat": "{{container}}",
+            "refId": "A"
+          }
+        ],
+        "title": "Log Rate by Container",
+        "type": "timeseries"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "id": 2,
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "sum(rate({job=\"docker\"} |~ \"(?i)error|fail|fatal|exception\" [$__auto])) by (container)",
+            "legendFormat": "{{container}}",
+            "refId": "A"
+          }
+        ],
+        "title": "Error Log Rate",
+        "type": "timeseries"
+      },
+      {
+        "gridPos": {
+          "h": 10,
+          "w": 24,
+          "x": 0,
+          "y": 8
+        },
+        "id": 3,
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "{job=\"docker\"}",
+            "maxLines": 100,
+            "refId": "A"
+          }
+        ],
+        "title": "Recent Logs",
+        "transformations": [
+          {
+            "id": "extractFields",
+            "options": {
+              "format": "json",
+              "source": "labels"
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "includeByName": {
+                "Line": true,
+                "Time": true,
+                "container": true,
+                "image": true
+              },
+              "indexByName": {
+                "Line": 3,
+                "Time": 0,
+                "container": 1,
+                "image": 2
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "gridPos": {
+          "h": 12,
+          "w": 24,
+          "x": 0,
+          "y": 18
+        },
+        "id": 4,
+        "options": {
+          "showLabels": true,
+          "showTime": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "{job=\"docker\"}",
+            "refId": "A"
+          }
+        ],
+        "title": "Live Docker Logs",
+        "type": "logs"
+      }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 39,
+    "tags": [
+      "docker",
+      "logs",
+      "loki"
+    ],
+    "time": {
+      "from": "now-15m",
+      "to": "now"
+    },
+    "timezone": "browser",
+    "title": "Docker Container Logs",
+    "uid": null,
+    "version": 1
+  },
+  "overwrite": true
+}

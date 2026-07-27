@@ -1,0 +1,169 @@
+{
+  "dashboard": {
+    "panels": [
+      {
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "red",
+                  "value": null
+                },
+                {
+                  "color": "green",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 0,
+          "y": 0
+        },
+        "id": 1,
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "count(count by (container) (count_over_time({job=\"docker\"}[1m])))",
+            "refId": "A"
+          }
+        ],
+        "title": "Active Containers",
+        "type": "stat"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "custom": {
+              "align": "left"
+            }
+          }
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 0,
+          "y": 4
+        },
+        "id": 2,
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "topk(20, sum by (container,image) (count_over_time({job=\"docker\"}[1m])))",
+            "format": "table",
+            "refId": "A",
+            "type": "instant"
+          }
+        ],
+        "title": "Running Containers",
+        "type": "table"
+      },
+      {
+        "gridPos": {
+          "h": 10,
+          "w": 12,
+          "x": 12,
+          "y": 4
+        },
+        "id": 3,
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "sum by (container) (rate({job=\"docker\"} [$__auto]))",
+            "legendFormat": "{{container}}",
+            "refId": "A"
+          }
+        ],
+        "title": "Container Log Activity",
+        "type": "timeseries"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "thresholds": {
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            }
+          }
+        },
+        "gridPos": {
+          "h": 4,
+          "w": 6,
+          "x": 6,
+          "y": 0
+        },
+        "id": 4,
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "sum(count_over_time({job=\"docker\"}[5m]))",
+            "refId": "A"
+          }
+        ],
+        "title": "Total Log Volume (5m)",
+        "type": "stat"
+      },
+      {
+        "gridPos": {
+          "h": 8,
+          "w": 24,
+          "x": 0,
+          "y": 14
+        },
+        "id": 5,
+        "options": {
+          "showLabels": true,
+          "showTime": true,
+          "wrapLogMessage": true
+        },
+        "targets": [
+          {
+            "datasource": {
+              "type": "loki",
+              "uid": "cftczc4ecderkc"
+            },
+            "expr": "{job=\"docker\"} |~ \"(?i)started|stopped|died|restarting|kill|oom\"",
+            "maxLines": 50,
+            "refId": "A"
+          }
+        ],
+        "title": "Container Events",
+        "type": "logs"
+      }
+    ],
+    "refresh": "10s",
+    "tags": [
+      "docker",
+      "containers",
+      "live"
+    ],
+    "time": {
+      "from": "now-5m",
+      "to": "now"
+    },
+    "title": "Live Docker Containers",
+    "uid": null,
+    "version": 1
+  },
+  "overwrite": true
+}

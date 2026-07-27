@@ -1,0 +1,27 @@
+# Docker volumes & local data
+grafana_storage/
+loki_storage/
+prometheus_data/
+tempo_storage/
+mimir_data/
+
+# Environment files
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+
+# Promtail positions
+positions.yaml

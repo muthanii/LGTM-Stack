@@ -1,0 +1,19 @@
+server:
+  http_listen_port: 9009
+
+blocks_storage:
+  backend: filesystem
+  filesystem:
+    dir: /mimir/data/tsdb
+
+compactor:
+  data_dir: /mimir/data/compactor
+
+ruler:
+  rule_path: /mimir/data/rules
+
+alertmanager:
+  data_dir: /mimir/data/alertmanager
+
+limits:
+  compactor_blocks_retention_period: 24h
