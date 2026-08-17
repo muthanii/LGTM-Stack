@@ -144,6 +144,8 @@ The Frappe REST API tells you *what happened* (errors, jobs, logins) but not *ho
 
 The Cloud Platform dashboard needs `FRAPPE_CLOUD_API_KEY` / `FRAPPE_CLOUD_API_SECRET` (generated on the **cloud.frappe.io account**, not the site). Its `$site` and `$timezone` are dashboard variables, so pointing it at another site is a text-box edit.
 
+> **After editing `.env`, run `docker compose -f compose.frappe.yml up -d`, not `restart`.** Docker reads `.env` when it *creates* a container; `restart` reuses the old environment, so credentials added after the container started are ignored and every panel of that datasource fails with 403. `up -d` recreates the container and re-provisions the datasource.
+
 Not everything on the platform API is reachable with an API key: `press.api.analytics.get_uptime`, `get_usage` and `request_logs` exist but Frappe Cloud does not whitelist them for key auth, so server-side request volume and response times stay dashboard-only. That gap is what the blackbox probes cover.
 
 Every log panel honours the dashboard time range — it is passed to Frappe as a `creation` filter using Grafana's `${__from:date:...}` macros. Add panels by pointing new Infinity queries at `/api/resource/<Doctype>` or `/api/method/frappe.client.get_list`.
