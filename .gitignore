@@ -5,9 +5,10 @@ prometheus_data/
 tempo_storage/
 mimir_data/
 
-# Environment files
+# Environment files (but keep the documented template)
 .env
 .env.*
+!.env.example
 
 # IDE
 .vscode/
@@ -25,3 +26,4 @@ docker-compose.override.yml
 
 # Promtail positions
 positions.yaml
+.gstack/

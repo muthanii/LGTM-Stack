@@ -1,0 +1,45 @@
+global:
+  scrape_interval: 30s
+  scrape_timeout: 20s
+
+scrape_configs:
+  # Website availability + latency, measured from this machine via blackbox.
+  # To watch a different site, edit the targets below (and FRAPPE_URL in .env).
+  - job_name: frappe-web
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://teebatkarbala.frappe.cloud/
+        labels:
+          page: home
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: frappe-blackbox:9115
+
+  # API health: 200 AND the body contains "pong".
+  - job_name: frappe-api
+    metrics_path: /probe
+    params:
+      module: [frappe_ping]
+    static_configs:
+      - targets:
+          - https://teebatkarbala.frappe.cloud/api/method/ping
+        labels:
+          page: api-ping
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: frappe-blackbox:9115
+
+  - job_name: blackbox-itself
+    static_configs:
+      - targets: ['frappe-blackbox:9115']

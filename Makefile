@@ -1,4 +1,4 @@
-.PHONY: up down restart logs ps clean status
+.PHONY: up down restart logs ps clean status frappe-up frappe-down frappe-logs
 
 # ─── Start / Stop ─────────────────────────────────────────────
 
@@ -10,6 +10,17 @@ down:      ## Stop and remove all services
 
 restart:   ## Restart all services
 	docker compose -f compose.yml down && docker compose -f compose.yml up -d
+
+# ─── Frappe dashboard ─────────────────────────────────────────
+
+frappe-up:   ## Start the Frappe dashboard (needs FRAPPE_API_KEY/SECRET in .env)
+	docker compose -f compose.frappe.yml up -d
+
+frappe-down: ## Stop the Frappe dashboard
+	docker compose -f compose.frappe.yml down
+
+frappe-logs: ## Tail the Frappe dashboard logs
+	docker compose -f compose.frappe.yml logs -f
 
 # ─── Status & Logs ────────────────────────────────────────────
 

@@ -1,0 +1,49 @@
+apiVersion: 1
+
+datasources:
+  - name: Frappe
+    uid: frappe
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    isDefault: true
+    editable: true
+    # Base URL — dashboard queries use paths relative to this
+    url: ${FRAPPE_URL}
+    jsonData:
+      auth_method: apiKey
+      apiKeyKey: Authorization
+      apiKeyType: header
+      # Infinity refuses to call any host not listed here once auth is configured
+      allowedHosts:
+        - ${FRAPPE_URL}
+    secureJsonData:
+      # Frappe token auth: "token <api_key>:<api_secret>"
+      apiKeyValue: token ${FRAPPE_API_KEY}:${FRAPPE_API_SECRET}
+
+  # Frappe Cloud platform API (press). Stays unused until FRAPPE_CLOUD_API_KEY
+  # and FRAPPE_CLOUD_API_SECRET are set in .env — without them it returns 403.
+  - name: Frappe Cloud
+    uid: frappe-cloud
+    type: yesoreyeram-infinity-datasource
+    access: proxy
+    editable: true
+    url: ${FRAPPE_CLOUD_URL}
+    jsonData:
+      auth_method: apiKey
+      apiKeyKey: Authorization
+      apiKeyType: header
+      allowedHosts:
+        - ${FRAPPE_CLOUD_URL}
+    secureJsonData:
+      apiKeyValue: token ${FRAPPE_CLOUD_API_KEY}:${FRAPPE_CLOUD_API_SECRET}
+
+  # Blackbox probe results — response time, uptime, status codes, TLS expiry
+  - name: Frappe Probes
+    uid: frappe-prom
+    type: prometheus
+    access: proxy
+    url: http://frappe-prometheus:9090
+    editable: true
+    jsonData:
+      httpMethod: POST
+      timeInterval: 30s

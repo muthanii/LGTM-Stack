@@ -1,0 +1,26 @@
+modules:
+  # Plain availability + latency probe. Follows redirects, fails on non-2xx.
+  http_2xx:
+    prober: http
+    timeout: 15s
+    http:
+      method: GET
+      valid_status_codes: []          # empty = any 2xx passes
+      valid_http_versions: ["HTTP/1.1", "HTTP/2.0"]
+      follow_redirects: true
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: true
+
+  # Same, but asserts the Frappe API actually answers "pong" — catches a site
+  # that serves a 200 maintenance page while the app is down.
+  frappe_ping:
+    prober: http
+    timeout: 15s
+    http:
+      method: GET
+      valid_status_codes: []
+      follow_redirects: true
+      preferred_ip_protocol: ip4
+      ip_protocol_fallback: true
+      fail_if_body_not_matches_regexp:
+        - "pong"

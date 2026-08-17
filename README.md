@@ -106,6 +106,66 @@ curl -X POST http://admin:admin@localhost:3000/api/dashboards/db \
 
 ---
 
+## 🧾 Frappe Cloud Dashboard
+
+A separate, self-contained stack (`compose.frappe.yml`) runs a Grafana that talks to a Frappe/ERPNext site over its REST API, using the [Infinity](https://grafana.com/grafana/plugins/yesoreyeram-infinity-datasource/) data source (Frappe has no native Grafana protocol).
+
+```bash
+cp .env.example .env          # then fill in FRAPPE_API_KEY / FRAPPE_API_SECRET
+make frappe-up
+open http://localhost:3001    # dashboard: "Frappe — Site Overview"
+```
+
+Get the credentials from your Frappe site: open your **User** doc → **API Access** → **Generate Keys**. The secret is shown only once.
+
+| Setting | Default |
+|---|---|
+| `FRAPPE_URL` | `https://teebatkarbala.frappe.cloud` |
+| `FRAPPE_GRAFANA_PORT` | `3001` (3000 is used by the LGTM stack) |
+| `FRAPPE_PROM_PORT` | `9091` (9090 is used by the LGTM stack) |
+
+### What the stack runs
+
+| Service | Purpose |
+|---|---|
+| `frappe-grafana` | Dashboards, on `:3001` |
+| `frappe-blackbox` | Probes the site over HTTPS every 30s — latency, status code, TLS expiry |
+| `frappe-prometheus` | Stores the probe results, 30d retention, on `:9091` |
+
+The Frappe REST API tells you *what happened* (errors, jobs, logins) but not *how fast the site is* — that's why the blackbox exporter is here. Probe targets live in `config/frappe-prometheus.yml`; edit them if the site URL changes.
+
+### Dashboards
+
+| Dashboard | Source | Panels |
+|---|---|---|
+| **Frappe — Website Performance** | blackbox → Prometheus | up/down, response time, uptime %, HTTP status, TLS expiry, page size, per-phase latency breakdown (DNS/TCP/TLS/server think time), p50/p95, availability timeline |
+| **Frappe — Logs & Errors** | Frappe REST API via Infinity | error count + Error Log table, failed scheduled jobs, job runs by status, scheduler config with last/next run, email queue, logins and activity, document change log |
+| **Frappe — Cloud Platform** | Frappe Cloud press API | site status, plan and price, region, CPU/database/disk quota gauges, daily CPU accounting, installed apps with commits, backups, domains |
+
+The Cloud Platform dashboard needs `FRAPPE_CLOUD_API_KEY` / `FRAPPE_CLOUD_API_SECRET` (generated on the **cloud.frappe.io account**, not the site). Its `$site` and `$timezone` are dashboard variables, so pointing it at another site is a text-box edit.
+
+Not everything on the platform API is reachable with an API key: `press.api.analytics.get_uptime`, `get_usage` and `request_logs` exist but Frappe Cloud does not whitelist them for key auth, so server-side request volume and response times stay dashboard-only. That gap is what the blackbox probes cover.
+
+Every log panel honours the dashboard time range — it is passed to Frappe as a `creation` filter using Grafana's `${__from:date:...}` macros. Add panels by pointing new Infinity queries at `/api/resource/<Doctype>` or `/api/method/frappe.client.get_list`.
+
+Frappe 16 rejects SQL strings in `fields`, so aggregates use dict syntax — `fields=["status",{"COUNT":"*"}]` — and the response key is literally `COUNT(*)`, which is what the Infinity column selector must be.
+
+### Persistence — what survives a restart
+
+The JSON files are the source of truth for these dashboards. Grafana re-reads them on start and every 30s, so **edits made in the UI are not saved** — Grafana marks them read-only and rejects the save rather than reverting it silently later.
+
+To change a panel: edit it in the UI → panel menu → **Inspect → Panel JSON** (or dashboard **Export → JSON**) → paste into the matching file in `dashboards/frappe/`. It reloads within 30s, no restart needed. Deleting a file deletes the dashboard from Grafana on the next cycle.
+
+| Thing | Survives restart | Stored in |
+|---|---|---|
+| The provisioned Frappe dashboards | ✅ (from the files) | `dashboards/frappe/*.json` — in git |
+| Probe history (response times, uptime) | ✅ 30 days | `frappe_prometheus_data` volume |
+| Dashboards you create yourself in the UI | ✅ | `frappe_grafana_storage` volume |
+| Admin password, users, alert rules, UI dashboards | ✅ | same volume |
+| …all of the above after `docker compose down -v` | ❌ | `-v` deletes the volume — export anything you care about first |
+
+---
+
 ## 🔌 Data Source Details
 
 All four data sources are **automatically provisioned** on first start via `grafana/provisioning/datasources/datasources.yaml`.
