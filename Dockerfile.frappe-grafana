@@ -1,0 +1,18 @@
+# Grafana with the Frappe dashboards and provisioning baked in.
+#
+# Why an image instead of bind mounts: under WSL2 the ./dashboards/frappe and
+# ./grafana/provisioning-frappe bind mounts came back EMPTY after a host reboot
+# while the files were still present on the host. Grafana then saw a provider
+# with no files (and once, no provider config at all) and deleted all seven
+# dashboards as "sources removed". Baking them in means there is nothing to go
+# stale: the files are part of the image's filesystem.
+#
+# Trade-off: editing dashboards/frappe/*.json no longer hot-reloads in 30s.
+# Run `make frappe-up` to rebuild and restart (COPY-only, takes seconds).
+#
+# No secrets here. The datasource YAML references ${FRAPPE_*} variables that
+# Grafana expands at runtime from the environment, so keys stay in .env.
+FROM grafana/grafana:latest
+
+COPY --chown=472:0 grafana/provisioning-frappe /etc/grafana/provisioning
+COPY --chown=472:0 dashboards/frappe /etc/grafana/dashboards-frappe

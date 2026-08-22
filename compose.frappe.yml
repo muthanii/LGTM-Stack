@@ -1,12 +1,20 @@
 services:
   frappe-grafana:
-    image: grafana/grafana:latest
+    # Built, not pulled — dashboards and provisioning are baked in so no bind
+    # mount can go stale on a WSL2 reboot. See Dockerfile.frappe-grafana.
+    build:
+      context: .
+      dockerfile: Dockerfile.frappe-grafana
+    image: frappe-grafana:local
     container_name: frappe-grafana
     restart: unless-stopped
     ports:
       # 3001 by default so this can run next to the LGTM stack (compose.yml) on 3000
       - '${FRAPPE_GRAFANA_PORT:-3001}:3000'
     environment:
+      # Containers default to UTC; the host and the Frappe site are both
+      # Asia/Baghdad (+03, no DST). Keeps container logs on your wall clock.
+      TZ: ${TZ:-Asia/Baghdad}
       GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER:-admin}
       GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-admin}
       GF_SERVER_HTTP_ADDR: "::"
@@ -25,8 +33,6 @@ services:
       FRAPPE_CLOUD_SITE: ${FRAPPE_CLOUD_SITE:-}
     volumes:
       - frappe_grafana_storage:/var/lib/grafana
-      - ./grafana/provisioning-frappe:/etc/grafana/provisioning:ro
-      - ./dashboards/frappe:/etc/grafana/dashboards-frappe:ro
     depends_on:
       - frappe-prometheus
     networks:
@@ -38,6 +44,8 @@ services:
     container_name: frappe-blackbox
     restart: unless-stopped
     command: --config.file=/etc/blackbox/blackbox.yml
+    environment:
+      TZ: ${TZ:-Asia/Baghdad}
     volumes:
       - ./config/frappe-blackbox.yml:/etc/blackbox/blackbox.yml:ro
     networks:
@@ -53,6 +61,8 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
       - --storage.tsdb.retention.time=30d
+    environment:
+      TZ: ${TZ:-Asia/Baghdad}
     ports:
       - '${FRAPPE_PROM_PORT:-9091}:9090'
     volumes:

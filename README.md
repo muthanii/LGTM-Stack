@@ -154,13 +154,21 @@ Frappe 16 rejects SQL strings in `fields`, so aggregates use dict syntax — `fi
 
 ### Persistence — what survives a restart
 
-The JSON files are the source of truth for these dashboards. Grafana re-reads them on start and every 30s, so **edits made in the UI are not saved** — Grafana marks them read-only and rejects the save rather than reverting it silently later.
+The JSON files are the source of truth for these dashboards. They are baked into the image at build time, so **edits made in the UI are not saved** — Grafana marks them read-only and rejects the save rather than reverting it silently later.
 
-To change a panel: edit it in the UI → panel menu → **Inspect → Panel JSON** (or dashboard **Export → JSON**) → paste into the matching file in `dashboards/frappe/`. It reloads within 30s, no restart needed. Deleting a file deletes the dashboard from Grafana on the next cycle.
+To change a panel: edit it in the UI → panel menu → **Inspect → Panel JSON** (or dashboard **Export → JSON**) → paste into the matching file in `dashboards/frappe/`, then run **`make frappe-up`** to rebuild. It is a COPY-only rebuild and takes seconds.
+
+**The dashboards are baked into the image, not bind-mounted.** `Dockerfile.frappe-grafana` copies `dashboards/frappe/` and `grafana/provisioning-frappe/` into the image. This is deliberate and worth keeping:
+
+> Under WSL2, both bind mounts came back **empty** after a host reboot while the files were still present on the host. Grafana saw a provider with no files — and on the second occurrence, no provider config at all — and deleted all seven dashboards as "sources removed". `disableDeletion: true` does not protect against this: when the *provider config itself* goes missing, Grafana removes every dashboard that provider created. Because `restart: unless-stopped` autostarts the containers at boot, this happened before anyone could intervene.
+
+Baking the files in removes the failure mode entirely — there is no mount to go stale. Verified by deleting the host `dashboards/frappe/` directory outright and restarting: all seven dashboards still came up.
+
+No secrets are in the image. The datasource YAML references `${FRAPPE_*}` variables that Grafana expands at runtime, so keys stay in `.env`.
 
 | Thing | Survives restart | Stored in |
 |---|---|---|
-| The provisioned Frappe dashboards | ✅ (from the files) | `dashboards/frappe/*.json` — in git |
+| The provisioned Frappe dashboards | ✅ (baked into the image; survives a missing/stale host directory) | `dashboards/frappe/*.json` — in git |
 | Probe history (response times, uptime) | ✅ 30 days | `frappe_prometheus_data` volume |
 | Dashboards you create yourself in the UI | ✅ | `frappe_grafana_storage` volume |
 | Admin password, users, alert rules, UI dashboards | ✅ | same volume |

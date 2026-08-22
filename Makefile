@@ -1,4 +1,4 @@
-.PHONY: up down restart logs ps clean status frappe-up frappe-down frappe-logs
+.PHONY: up down restart logs ps clean status frappe-up frappe-down frappe-restart frappe-logs
 
 # ─── Start / Stop ─────────────────────────────────────────────
 
@@ -13,11 +13,16 @@ restart:   ## Restart all services
 
 # ─── Frappe dashboard ─────────────────────────────────────────
 
-frappe-up:   ## Start the Frappe dashboard (needs FRAPPE_API_KEY/SECRET in .env)
-	docker compose -f compose.frappe.yml up -d
+# --build picks up any edits to dashboards/frappe/*.json (they are baked into
+# the image, not bind-mounted). --force-recreate ensures the new image is used.
+frappe-up:   ## Start/rebuild the Frappe dashboard (needs FRAPPE_API_KEY/SECRET in .env)
+	docker compose -f compose.frappe.yml up -d --build --force-recreate
 
 frappe-down: ## Stop the Frappe dashboard
 	docker compose -f compose.frappe.yml down
+
+frappe-restart: ## Rebuild and restart the Frappe dashboard
+	docker compose -f compose.frappe.yml up -d --build --force-recreate
 
 frappe-logs: ## Tail the Frappe dashboard logs
 	docker compose -f compose.frappe.yml logs -f

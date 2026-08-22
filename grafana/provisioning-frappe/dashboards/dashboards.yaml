@@ -3,7 +3,12 @@ apiVersion: 1
 providers:
   - name: Frappe
     type: file
-    disableDeletion: false
+    # true = a missing file NEVER deletes the dashboard from Grafana. Set after a
+    # stale WSL2 bind mount made this directory read as empty, and the provisioner
+    # deleted all 7 dashboards as "sources removed". Deliberate deletions are rare;
+    # a flaky mount is not. To really remove one: delete the file, then delete it
+    # in the UI (or wipe the frappe_grafana_storage volume).
+    disableDeletion: true
     updateIntervalSeconds: 30
     # false = the file wins. Grafana marks the dashboard read-only in the UI and
     # offers "Copy JSON"/"Save JSON to file" instead of silently reverting edits
