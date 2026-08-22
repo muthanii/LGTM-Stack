@@ -47,7 +47,7 @@
     {
       "id": 20,
       "type": "stat",
-      "title": "Errors",
+      "title": "Errors (unseen)",
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "frappe"
@@ -117,7 +117,7 @@
               },
               {
                 "key": "filters",
-                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+                "value": "[[\"seen\", \"=\", 0], [\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
               }
             ]
           },
@@ -588,7 +588,7 @@
     {
       "id": 27,
       "type": "table",
-      "title": "Error Log",
+      "title": "Error Log (unseen)",
       "datasource": {
         "type": "yesoreyeram-infinity-datasource",
         "uid": "frappe"
@@ -652,7 +652,7 @@
               },
               {
                 "key": "filters",
-                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+                "value": "[[\"seen\", \"=\", 0], [\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
               },
               {
                 "key": "order_by",
@@ -669,8 +669,7 @@
             {
               "selector": "creation",
               "text": "When",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             },
             {
               "selector": "method",
@@ -786,8 +785,7 @@
             {
               "selector": "creation",
               "text": "When",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             },
             {
               "selector": "scheduled_job_type",
@@ -1252,14 +1250,12 @@
             {
               "selector": "last_execution",
               "text": "Last Run",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             },
             {
               "selector": "next_execution",
               "text": "Next Run",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             }
           ],
           "filters": []
@@ -1363,8 +1359,7 @@
             {
               "selector": "creation",
               "text": "When",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             },
             {
               "selector": "sender",
@@ -1498,8 +1493,7 @@
             {
               "selector": "creation",
               "text": "When",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             },
             {
               "selector": "user",
@@ -1620,8 +1614,7 @@
             {
               "selector": "creation",
               "text": "When",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             },
             {
               "selector": "owner",

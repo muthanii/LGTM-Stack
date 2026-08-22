@@ -1175,8 +1175,7 @@
             {
               "selector": "date",
               "text": "Day",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05-07:00"
+              "type": "string"
             },
             {
               "selector": "value",
@@ -1410,8 +1409,7 @@
             {
               "selector": "creation",
               "text": "When",
-              "type": "timestamp",
-              "timestampFormat": "2006-01-02 15:04:05.000000"
+              "type": "string"
             },
             {
               "selector": "status",

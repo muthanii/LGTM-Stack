@@ -1,0 +1,1339 @@
+{
+  "description": "Scheduler, error log, email queue and login activity.",
+  "editable": true,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": true,
+      "tags": [
+        "frappe"
+      ],
+      "targetBlank": false,
+      "title": "Frappe",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 20,
+      "panels": [],
+      "title": "Scheduler",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "message",
+              "text": "runs",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_count",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Scheduled Job Log"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Job Runs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "message",
+              "text": "failed",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_count",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Scheduled Job Log"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"status\", \"=\", \"Failed\"], [\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Failed Runs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "id": 23,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "message",
+              "text": "errors",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_count",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Error Log"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Errors Logged",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "description": "Email Queue rows not in Sent state (all time).",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "id": 24,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "message",
+              "text": "queued",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_count",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Email Queue"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"status\", \"!=\", \"Sent\"]]"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Emails Unsent",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "id": 25,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "message",
+              "text": "stopped",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_count",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Scheduled Job Type"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"stopped\", \"=\", 1]]"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Stopped Jobs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "description": "Version records \u2014 documents edited inside the time range.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "purple",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "id": 26,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "message",
+              "text": "versions",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_count",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Version"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Doc Changes",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlPu"
+          },
+          "noValue": "No data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 5
+      },
+      "id": 27,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "status",
+              "text": "Status",
+              "type": "string"
+            },
+            {
+              "selector": "COUNT(*)",
+              "text": "Runs",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "message",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_list",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Scheduled Job Log"
+              },
+              {
+                "key": "fields",
+                "value": "[\"status\", {\"COUNT\": \"*\"}]"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              },
+              {
+                "key": "group_by",
+                "value": "status"
+              },
+              {
+                "key": "limit_page_length",
+                "value": "0"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Job Runs by Status",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "noValue": "No data"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 5
+      },
+      "id": 28,
+      "options": {
+        "displayLabels": [
+          "name",
+          "value"
+        ],
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        }
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "operation",
+              "text": "Operation",
+              "type": "string"
+            },
+            {
+              "selector": "COUNT(*)",
+              "text": "Count",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "message",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_list",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Activity Log"
+              },
+              {
+                "key": "fields",
+                "value": "[\"operation\", {\"COUNT\": \"*\"}]"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              },
+              {
+                "key": "group_by",
+                "value": "operation"
+              },
+              {
+                "key": "limit_page_length",
+                "value": "0"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Activity by Operation",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-BlPu"
+          },
+          "noValue": "No data",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 5
+      },
+      "id": 29,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "status",
+              "text": "Status",
+              "type": "string"
+            },
+            {
+              "selector": "COUNT(*)",
+              "text": "Emails",
+              "type": "number"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "message",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_list",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Email Queue"
+              },
+              {
+                "key": "fields",
+                "value": "[\"status\", {\"COUNT\": \"*\"}]"
+              },
+              {
+                "key": "group_by",
+                "value": "status"
+              },
+              {
+                "key": "limit_page_length",
+                "value": "0"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Email Queue by Status",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 30,
+      "panels": [],
+      "title": "Failures",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "filterable": true
+          },
+          "noValue": "No records"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 31,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "When"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "creation",
+              "text": "When",
+              "type": "string"
+            },
+            {
+              "selector": "scheduled_job_type",
+              "text": "Job",
+              "type": "string"
+            },
+            {
+              "selector": "details",
+              "text": "Details",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "message",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_list",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Scheduled Job Log"
+              },
+              {
+                "key": "fields",
+                "value": "[\"creation\", \"scheduled_job_type\", \"details\"]"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"status\", \"=\", \"Failed\"], [\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              },
+              {
+                "key": "order_by",
+                "value": "creation desc"
+              },
+              {
+                "key": "limit_page_length",
+                "value": "20"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Failed Scheduled Jobs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "filterable": true
+          },
+          "noValue": "No records"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 32,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "When"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "creation",
+              "text": "When",
+              "type": "string"
+            },
+            {
+              "selector": "method",
+              "text": "Method",
+              "type": "string"
+            },
+            {
+              "selector": "name",
+              "text": "ID",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "message",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_list",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Error Log"
+              },
+              {
+                "key": "fields",
+                "value": "[\"creation\", \"method\", \"name\"]"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              },
+              {
+                "key": "order_by",
+                "value": "creation desc"
+              },
+              {
+                "key": "limit_page_length",
+                "value": "30"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Error Log",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 33,
+      "panels": [],
+      "title": "Scheduler configuration",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "filterable": true
+          },
+          "noValue": "No records"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Stopped"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "0": {
+                        "color": "green",
+                        "index": 0,
+                        "text": "running"
+                      },
+                      "1": {
+                        "color": "red",
+                        "index": 1,
+                        "text": "stopped"
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 14,
+        "x": 0,
+        "y": 24
+      },
+      "id": 34,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "method",
+              "text": "Method",
+              "type": "string"
+            },
+            {
+              "selector": "frequency",
+              "text": "Frequency",
+              "type": "string"
+            },
+            {
+              "selector": "stopped",
+              "text": "Stopped",
+              "type": "number"
+            },
+            {
+              "selector": "last_execution",
+              "text": "Last Run",
+              "type": "string"
+            },
+            {
+              "selector": "next_execution",
+              "text": "Next Run",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "message",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_list",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Scheduled Job Type"
+              },
+              {
+                "key": "fields",
+                "value": "[\"method\", \"frequency\", \"stopped\", \"last_execution\", \"next_execution\"]"
+              },
+              {
+                "key": "order_by",
+                "value": "last_execution desc"
+              },
+              {
+                "key": "limit_page_length",
+                "value": "0"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Scheduled Job Types",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "yesoreyeram-infinity-datasource",
+        "uid": "frappe"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "filterable": true
+          },
+          "noValue": "No records"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 14,
+        "y": 24
+      },
+      "id": 35,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "When"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "columns": [
+            {
+              "selector": "creation",
+              "text": "When",
+              "type": "string"
+            },
+            {
+              "selector": "user",
+              "text": "User",
+              "type": "string"
+            },
+            {
+              "selector": "subject",
+              "text": "Subject",
+              "type": "string"
+            }
+          ],
+          "datasource": {
+            "type": "yesoreyeram-infinity-datasource",
+            "uid": "frappe"
+          },
+          "filters": [],
+          "format": "table",
+          "parser": "backend",
+          "refId": "A",
+          "root_selector": "message",
+          "source": "url",
+          "type": "json",
+          "url": "/api/method/frappe.client.get_list",
+          "url_options": {
+            "data": "",
+            "method": "GET",
+            "params": [
+              {
+                "key": "doctype",
+                "value": "Activity Log"
+              },
+              {
+                "key": "fields",
+                "value": "[\"creation\", \"user\", \"subject\"]"
+              },
+              {
+                "key": "filters",
+                "value": "[[\"operation\", \"=\", \"Login\"], [\"creation\", \">=\", \"${__from:date:YYYY-MM-DD HH:mm:ss}\"], [\"creation\", \"<=\", \"${__to:date:YYYY-MM-DD HH:mm:ss}\"]]"
+              },
+              {
+                "key": "order_by",
+                "value": "creation desc"
+              },
+              {
+                "key": "limit_page_length",
+                "value": "20"
+              }
+            ]
+          }
+        }
+      ],
+      "title": "Recent Logins",
+      "type": "table"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 39,
+  "tags": [
+    "frappe"
+  ],
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "Frappe \u2014 System Health",
+  "uid": "frappe-health"
+}
